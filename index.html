@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanzaFlow | Enterprise Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="aura-theme">
+    <header class="nav-header">
+        <div class="logo-text">FinanzaFlow <span style="font-size: 0.7rem; color: var(--accent); font-weight: 600;">PRO</span></div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <button id="btn-help" class="btn" style="padding: 5px 15px; background: #f1f5f9; border-radius: 10px; font-weight: 800;">¿CÓMO JUGAR?</button>
+            <div class="user-score">
+                <span>FlowPoints</span> <span id="flow-points">150</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Sidebar: Navigation & Info -->
+        <aside class="sidebar">
+            <section class="hero-section">
+                <h3 style="color: var(--primary); font-weight: 900;">Guía Rápida</h3>
+                <div class="hero-steps">
+                    <div class="step-item"><span class="step-num">1</span> Reto mensual de $1.00</div>
+                    <div class="step-item"><span class="step-num">2</span> Escanea facturas reales</div>
+                    <div class="step-item"><span class="step-num">3</span> Mantén tu salud al 100%</div>
+                </div>
+            </section>
+            
+            <section class="card" style="padding: 20px; text-align: center;">
+                <h4 style="font-weight: 800; color: var(--text-soft);">SISTEMA ACTIVO</h4>
+                <div style="font-size: 0.7rem; color: var(--success); margin-top: 5px;">● Conectado a Escáner v2.4</div>
+            </section>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section class="card vault-hud">
+                <span class="hud-label">Presupuesto en Bóveda</span>
+                <div class="budget-glow" id="challenge-budget">$1.00</div>
+                <div class="survival-status">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 700;">
+                        <span>Salud Financiera</span>
+                        <span id="health-percent">100%</span>
+                    </div>
+                    <div class="survival-bar">
+                        <div id="health-fill" class="survival-fill"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-weight: 900; font-size: 1.3rem;">Log de Transacciones</h3>
+                    <div style="font-size: 0.7rem; font-weight: 700; padding: 5px 10px; background: #eff6ff; border-radius: 8px; color: var(--primary);">VISTA DETALLADA</div>
+                </div>
+                <div id="transactions-list"></div>
+            </section>
+        </main>
+
+        <!-- Right Panel: Controls & Goals -->
+        <aside class="right-panel">
+            <div class="card" style="background: rgba(255,255,255,0.7);">
+                <h3 style="margin-bottom: 20px; font-weight: 900;">Acciones Rápidas</h3>
+                <div class="action-grid">
+                    <button id="btn-open-expense" class="btn btn-primary" style="background: linear-gradient(45deg, var(--accent), #f472b6); box-shadow: var(--glow-accent);">
+                        ➕ REGISTRAR GASTO
+                    </button>
+                    <button id="btn-add-income" class="btn btn-outline" style="border-radius: 15px; padding: 12px; font-size: 0.8rem;">
+                        💰 Añadir Ingreso
+                    </button>
+                </div>
+            </div>
+
+            <section class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-weight: 900;">SimuMetas 🚀</h3>
+                    <button id="btn-new-goal" class="btn" style="padding: 5px 12px; border-radius: 10px; background: #f3f4f6; font-size: 0.8rem;">+</button>
+                </div>
+                <div id="goals-container"></div>
+            </section>
+        </aside>
+    </div>
+
+    <!-- Modal Form -->
+    <div id="modal-container" class="modal-aura hidden">
+        <div class="modal-content">
+            <h2 style="font-weight: 900; margin-bottom: 25px;">Registrar Gasto</h2>
+            <form id="transaction-form">
+                <div class="form-field">
+                    <label>CONCEPTO</label>
+                    <input type="text" id="concept" placeholder="Ej: Pasajes, Colación..." required>
+                </div>
+                <div class="form-field">
+                    <label>MONTO ($)</label>
+                    <input type="number" id="amount" step="0.01" placeholder="0.00" required>
+                </div>
+                <div class="form-field">
+                    <label>TIPO DE GASTO</label>
+                    <select id="expense-type">
+                        <option value="vital">Vital (Necesario)</option>
+                        <option value="luxury">Hormiga (Innecesario)</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" id="btn-close-modal" class="btn" style="background: #f1f5f9; color: #475569; flex: 1;">CANCELAR</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">VALIDAR GASTO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div id="modal-goal-container" class="modal-aura hidden">
+        <div class="modal-content">
+            <h2 style="font-weight: 900; margin-bottom: 25px; color: var(--primary);">Nueva SimuMeta 🚀</h2>
+            <form id="goal-form">
+                <div class="form-field">
+                    <label>¿QUÉ QUIERES CONSEGUIR?</label>
+                    <input type="text" id="goal-name" placeholder="Ej: PlayStation 5" required>
+                </div>
+                <div class="form-field">
+                    <label>COSTO TOTAL ($)</label>
+                    <input type="number" id="goal-target" step="0.01" placeholder="500.00" required>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" id="btn-close-goal-modal" class="btn" style="background: #f1f5f9; color: #475569; flex: 1;">CANCELAR</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 3;">ACEPTAR META</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorial-container" class="modal-aura hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2 style="font-weight: 900; color: var(--primary); font-size: 1.8rem; margin-bottom: 15px;">🎮 Reglas del Juego</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="background: #f8fafc; padding: 15px; border-radius: 20px;">
+                    <strong style="display: block; margin-bottom: 5px;">1. El Reto del Dólar ($1.00)</strong>
+                    <p style="font-size: 0.85rem; color: var(--text-soft);">Tienes solo $1.00 virtual para sobrevivir el mes. Cada vez que gastes dinero REAL en la calle, regístralo aquí.</p>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 15px; border-radius: 20px;">
+                    <strong style="display: block; margin-bottom: 5px;">2. Registro Directo</strong>
+                    <p style="font-size: 0.85rem; color: var(--text-soft);">No necesitas subir facturas. Solo presiona el botón rosa de "REGISTRAR GASTO" y anota lo que compraste al instante.</p>
+                </div>
+
+                <div style="background: #f8fafc; padding: 15px; border-radius: 20px;">
+                    <strong style="display: block; margin-bottom: 5px;">3. Salud Financiera</strong>
+                    <p style="font-size: 0.85rem; color: var(--text-soft);">Gasta en cosas útiles (Vital) para mantener tu salud. Si compras cosas innecesarias (Gasto Hormiga), tu salud bajará y podrías "perder" el reto.</p>
+                </div>
+            </div>
+
+            <button id="btn-close-tutorial" class="btn btn-primary" style="width: 100%; margin-top: 25px;">¡ENTENDIDO, A JUGAR!</button>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
